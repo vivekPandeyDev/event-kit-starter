@@ -1,6 +1,5 @@
 package pandey.vivek.eventkit.outbox;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pandey.vivek.eventkit.api.DomainEvent;
@@ -9,6 +8,7 @@ import pandey.vivek.eventkit.exception.EventPublishException;
 import pandey.vivek.eventkit.outbox.entity.OutboxEvent;
 import pandey.vivek.eventkit.outbox.repository.OutboxRepository;
 import pandey.vivek.eventkit.outbox.service.TopicResolver;
+import tools.jackson.databind.ObjectMapper;
 
 @RequiredArgsConstructor
 @Slf4j
