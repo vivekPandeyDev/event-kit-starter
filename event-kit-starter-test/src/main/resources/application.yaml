@@ -24,3 +24,15 @@ spring:
       ddl-auto: ${JPA_DDL_AUTO:create}
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+  # ===============================
+  # Kafka Configuration
+  # ===============================
+  kafka:
+    bootstrap-servers: ${MEDIA_SYSTEM_KAFKA_HOST}
+    producer:
+      retries: 3
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: media-service-group
+      auto-offset-reset: earliest
