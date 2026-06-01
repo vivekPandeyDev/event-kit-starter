@@ -36,3 +36,10 @@ spring:
     consumer:
       group-id: media-service-group
       auto-offset-reset: earliest
+# ===============================
+# Event kit Configuration
+# ===============================
+event-kit:
+  outbox:
+    batch-size: 100
+    publish-delay-ms: 2000

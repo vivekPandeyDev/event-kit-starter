@@ -15,7 +15,7 @@ public class OutboxKafkaPublisher implements OutboxPublisher {
 	private final KafkaTemplate<String, String> kafka;
 
 	public void publishPending(int batchSize) {
-		var events = repo.lockPendingEvents(50);
+		var events = repo.lockPendingEvents(batchSize);
 		for (var event : events) {
 			try {
 				kafka.send(event.getTopic(), event.getAggregateId(), event.getPayload());
