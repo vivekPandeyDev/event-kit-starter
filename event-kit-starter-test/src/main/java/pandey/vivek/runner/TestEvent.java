@@ -8,6 +8,9 @@ import java.util.UUID;
 @EventTopic("media-events")
 public record TestEvent(UUID eventId, UUID mediaId)implements DomainEvent {
 
+    public TestEvent {
+    }
+
     @Override
     public String aggregateId() {
         return mediaId.toString();

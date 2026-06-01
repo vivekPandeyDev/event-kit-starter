@@ -34,7 +34,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
-      group-id: media-service-group
+      group-id: event-test-group
       auto-offset-reset: earliest
 # ===============================
 # Event kit Configuration
