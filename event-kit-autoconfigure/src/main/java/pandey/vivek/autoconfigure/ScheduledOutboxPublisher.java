@@ -9,9 +9,11 @@ public class ScheduledOutboxPublisher {
 
 	private final OutboxKafkaPublisher publisher;
 
-	@Scheduled(fixedDelay = 5000)
+	private final EventKitProperties props;
+
+	@Scheduled(fixedDelayString = "${event-kit.outbox.publish-delay-ms:5000}")
 	public void publish() {
-		publisher.publishPending();
+		publisher.publishPending(props.getOutbox().getBatchSize());
 	}
 
 }

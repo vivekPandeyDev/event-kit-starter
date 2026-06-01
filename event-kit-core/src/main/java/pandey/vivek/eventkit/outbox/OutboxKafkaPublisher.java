@@ -3,7 +3,6 @@ package pandey.vivek.eventkit.outbox;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
-import pandey.vivek.eventkit.outbox.enums.OutboxStatus;
 import pandey.vivek.eventkit.outbox.repository.OutboxRepository;
 import pandey.vivek.eventkit.outbox.service.OutboxPublisher;
 
@@ -15,8 +14,8 @@ public class OutboxKafkaPublisher implements OutboxPublisher {
 
 	private final KafkaTemplate<String, String> kafka;
 
-	public void publishPending() {
-		var events = repo.findTop50ByStatusOrderByCreatedAtAsc(OutboxStatus.PENDING);
+	public void publishPending(int batchSize) {
+		var events = repo.lockPendingEvents(50);
 		for (var event : events) {
 			try {
 				kafka.send(event.getTopic(), event.getAggregateId(), event.getPayload());
@@ -32,6 +31,7 @@ public class OutboxKafkaPublisher implements OutboxPublisher {
 				repo.save(event);
 			}
 		}
+
 	}
 
 }

@@ -46,8 +46,8 @@ public class EventKitAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public ScheduledOutboxPublisher scheduledOutboxPublisher(OutboxKafkaPublisher publisher) {
-		return new ScheduledOutboxPublisher(publisher);
+	public ScheduledOutboxPublisher scheduledOutboxPublisher(OutboxKafkaPublisher publisher, EventKitProperties props) {
+		return new ScheduledOutboxPublisher(publisher, props);
 	}
 
 }

@@ -9,6 +9,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 public class EventKitProperties {
 
-	private String outboxTable = "outbox_event";
+	private Outbox outbox = new Outbox();
+
+	@Getter
+	@Setter
+	public static class Outbox {
+
+		private int batchSize = 50;
+
+		private long publishDelayMs = 5000;
+
+	}
 
 }
