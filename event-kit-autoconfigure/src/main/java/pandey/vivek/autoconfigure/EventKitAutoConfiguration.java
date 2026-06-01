@@ -17,14 +17,15 @@ import pandey.vivek.eventkit.outbox.repository.OutboxRepository;
 import pandey.vivek.eventkit.outbox.service.OutboxPublisher;
 import pandey.vivek.eventkit.outbox.service.TopicResolver;
 import pandey.vivek.eventkit.processed.JpaEventDeduplicator;
+import pandey.vivek.eventkit.processed.entity.ProcessedEvent;
 import pandey.vivek.eventkit.processed.repository.ProcessedEventRepository;
 import pandey.vivek.eventkit.processed.service.EventDeduplicator;
 import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 @EnableConfigurationProperties(EventKitProperties.class)
-@EntityScan(basePackageClasses = OutboxEvent.class)
-@EnableJpaRepositories(basePackageClasses = OutboxRepository.class)
+@EntityScan(basePackageClasses = { OutboxEvent.class, ProcessedEvent.class })
+@EnableJpaRepositories(basePackageClasses = { OutboxRepository.class, ProcessedEventRepository.class })
 @EnableScheduling
 public class EventKitAutoConfiguration {
 
