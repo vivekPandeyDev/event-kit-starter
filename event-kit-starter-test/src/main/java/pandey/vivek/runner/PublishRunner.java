@@ -4,17 +4,21 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import pandey.vivek.eventkit.api.DomainEventPublisher;
 
+import java.util.UUID;
+
 @Component
-public class BeanTestRunner implements CommandLineRunner {
+public class PublishRunner implements CommandLineRunner {
 
     private final DomainEventPublisher publisher;
 
-    public BeanTestRunner(DomainEventPublisher publisher) {
+    public PublishRunner(DomainEventPublisher publisher) {
         this.publisher = publisher;
     }
 
     @Override
     public void run(String... args) {
-        System.out.println(publisher.getClass());
+
+        publisher.publish(new TestEvent(UUID.randomUUID(), UUID.randomUUID()));
+        System.out.println("EVENT PUBLISHED");
     }
 }

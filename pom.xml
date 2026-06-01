@@ -13,6 +13,7 @@
     <modules>
         <module>event-kit-core</module>
         <module>event-kit-autoconfigure</module>
+        <module>event-kit-starter</module>
     </modules>
 
     <properties>

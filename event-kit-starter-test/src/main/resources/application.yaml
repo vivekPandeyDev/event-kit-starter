@@ -1,0 +1,26 @@
+server:
+  port: 3005
+spring:
+  application:
+    name: media-test
+  datasource:
+    url: jdbc:postgresql://${MEDIA_SYSTEM_DB_HOST}:${MEDIA_SYSTEM_DB_PORT}/${MEDIA_SYSTEM_DB_NAME}
+    username: ${MEDIA_SYSTEM_DB_USERNAME}
+    password: ${MEDIA_SYSTEM_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      pool-name: HikariPool-19
+  # ===============================
+  # Hibernate Configuration
+  # ===============================
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:create}
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
