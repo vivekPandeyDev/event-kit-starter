@@ -28,8 +28,8 @@ public class OutboxDomainEventPublisher implements DomainEventPublisher {
 			if (log.isDebugEnabled()) {
 				log.info("Payload for the topic: {}, payload json: {}", topic, payload);
 			}
-			var outbox = OutboxEvent.create(event.eventId(), event.aggregateId(), event.getClass().getName(), topic,
-					payload);
+			var outbox = OutboxEvent.create(event.eventId(), event.aggregateId(), event.getClass().getSimpleName(),
+					topic, payload);
 			repo.save(outbox);
 			if (log.isDebugEnabled()) {
 				log.info("Saved outbox event with id:{} and event id: {}, outbox event: {}", outbox.getId(),
