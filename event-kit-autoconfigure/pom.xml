@@ -7,10 +7,10 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>event-kit-core</artifactId>
+    <artifactId>event-kit-autoconfigure</artifactId>
     <packaging>jar</packaging>
 
-    <name>event-kit-core</name>
+    <name>event-kit-autoconfigure</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -19,12 +19,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <groupId>pandey.vivek</groupId>
+            <artifactId>event-kit-core</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
     </dependencies>
 </project>

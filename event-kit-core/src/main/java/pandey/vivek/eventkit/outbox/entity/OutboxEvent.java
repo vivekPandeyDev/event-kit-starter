@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import pandey.vivek.eventkit.outbox.enums.OutboxStatus;
 
 import java.time.Instant;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Table(name = "outbox_event")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = {"payload"})
 public class OutboxEvent {
 
     @Id
