@@ -20,6 +20,8 @@ import pandey.vivek.eventkit.processed.JpaEventDeduplicator;
 import pandey.vivek.eventkit.processed.entity.ProcessedEvent;
 import pandey.vivek.eventkit.processed.repository.ProcessedEventRepository;
 import pandey.vivek.eventkit.processed.service.EventDeduplicator;
+import pandey.vivek.eventkit.registry.AnnotationEventTypeResolver;
+import pandey.vivek.eventkit.registry.EventTypeResolver;
 import tools.jackson.databind.ObjectMapper;
 
 @Configuration
@@ -38,8 +40,8 @@ public class EventKitAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public DomainEventPublisher domainEventPublisher(OutboxRepository repo, ObjectMapper mapper,
-			TopicResolver resolver) {
-		return new OutboxDomainEventPublisher(repo, mapper, resolver);
+			TopicResolver topicResolver, EventTypeResolver eventTypeResolver) {
+		return new OutboxDomainEventPublisher(repo, mapper, topicResolver, eventTypeResolver);
 	}
 
 	@Bean
@@ -58,6 +60,12 @@ public class EventKitAutoConfiguration {
 	@ConditionalOnMissingBean
 	public EventDeduplicator eventDeduplicator(ProcessedEventRepository processedEventRepository) {
 		return new JpaEventDeduplicator(processedEventRepository);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public EventTypeResolver eventTypeResolver() {
+		return new AnnotationEventTypeResolver();
 	}
 
 }

@@ -8,6 +8,7 @@ import pandey.vivek.eventkit.exception.EventPublishException;
 import pandey.vivek.eventkit.outbox.entity.OutboxEvent;
 import pandey.vivek.eventkit.outbox.repository.OutboxRepository;
 import pandey.vivek.eventkit.outbox.service.TopicResolver;
+import pandey.vivek.eventkit.registry.EventTypeResolver;
 import tools.jackson.databind.ObjectMapper;
 
 @RequiredArgsConstructor
@@ -20,16 +21,18 @@ public class OutboxDomainEventPublisher implements DomainEventPublisher {
 
 	private final TopicResolver resolver;
 
+	private final EventTypeResolver typeResolver;
+
 	@Override
 	public void publish(DomainEvent event) {
 		try {
 			String payload = mapper.writeValueAsString(event);
 			String topic = resolver.resolve(event);
+			String resolveName = typeResolver.resolve(event);
 			if (log.isDebugEnabled()) {
-				log.info("Payload for the topic: {}, payload json: {}", topic, payload);
+				log.info("Payload for the topic: {}, resolved name: {} payload json: {}", topic, resolveName, payload);
 			}
-			var outbox = OutboxEvent.create(event.eventId(), event.aggregateId(), event.getClass().getSimpleName(),
-					topic, payload);
+			var outbox = OutboxEvent.create(event.eventId(), event.aggregateId(), resolveName, topic, payload);
 			repo.save(outbox);
 			if (log.isDebugEnabled()) {
 				log.info("Saved outbox event with id:{} and event id: {}, outbox event: {}", outbox.getId(),
