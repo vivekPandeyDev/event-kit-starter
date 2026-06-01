@@ -16,6 +16,9 @@ import pandey.vivek.eventkit.outbox.entity.OutboxEvent;
 import pandey.vivek.eventkit.outbox.repository.OutboxRepository;
 import pandey.vivek.eventkit.outbox.service.OutboxPublisher;
 import pandey.vivek.eventkit.outbox.service.TopicResolver;
+import pandey.vivek.eventkit.processed.JpaEventDeduplicator;
+import pandey.vivek.eventkit.processed.repository.ProcessedEventRepository;
+import pandey.vivek.eventkit.processed.service.EventDeduplicator;
 import tools.jackson.databind.ObjectMapper;
 
 @Configuration
@@ -48,6 +51,12 @@ public class EventKitAutoConfiguration {
 	@ConditionalOnMissingBean
 	public ScheduledOutboxPublisher scheduledOutboxPublisher(OutboxKafkaPublisher publisher, EventKitProperties props) {
 		return new ScheduledOutboxPublisher(publisher, props);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public EventDeduplicator eventDeduplicator(ProcessedEventRepository processedEventRepository) {
+		return new JpaEventDeduplicator(processedEventRepository);
 	}
 
 }
