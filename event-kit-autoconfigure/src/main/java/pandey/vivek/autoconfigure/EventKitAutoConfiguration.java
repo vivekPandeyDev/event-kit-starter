@@ -3,6 +3,7 @@ package pandey.vivek.autoconfigure;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -21,7 +22,10 @@ import pandey.vivek.eventkit.processed.entity.ProcessedEvent;
 import pandey.vivek.eventkit.processed.repository.ProcessedEventRepository;
 import pandey.vivek.eventkit.processed.service.EventDeduplicator;
 import pandey.vivek.eventkit.registry.AnnotationEventTypeResolver;
-import pandey.vivek.eventkit.registry.EventTypeResolver;
+import pandey.vivek.eventkit.registry.EventTypeRegistryInitializer;
+import pandey.vivek.eventkit.registry.InMemoryEventTypeRegistry;
+import pandey.vivek.eventkit.registry.service.EventTypeRegistry;
+import pandey.vivek.eventkit.registry.service.EventTypeResolver;
 import tools.jackson.databind.ObjectMapper;
 
 @Configuration
@@ -67,5 +71,18 @@ public class EventKitAutoConfiguration {
 	public EventTypeResolver eventTypeResolver() {
 		return new AnnotationEventTypeResolver();
 	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public EventTypeRegistry eventTypeRegistry() {
+		return new InMemoryEventTypeRegistry();
+	}
+
+	// @Bean
+	// @ConditionalOnMissingBean
+	// public EventTypeRegistryInitializer eventTypeRegistryInitializer(ApplicationContext
+	// ctx, InMemoryEventTypeRegistry registry) {
+	// return new EventTypeRegistryInitializer(ctx, registry);
+	// }
 
 }

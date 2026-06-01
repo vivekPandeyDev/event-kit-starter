@@ -8,7 +8,7 @@ import pandey.vivek.eventkit.exception.EventPublishException;
 import pandey.vivek.eventkit.outbox.entity.OutboxEvent;
 import pandey.vivek.eventkit.outbox.repository.OutboxRepository;
 import pandey.vivek.eventkit.outbox.service.TopicResolver;
-import pandey.vivek.eventkit.registry.EventTypeResolver;
+import pandey.vivek.eventkit.registry.service.EventTypeResolver;
 import tools.jackson.databind.ObjectMapper;
 
 @RequiredArgsConstructor
