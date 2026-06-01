@@ -14,55 +14,56 @@ import java.util.UUID;
 @Table(name = "outbox_event")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = {"payload"})
+@ToString(exclude = { "payload" })
 public class OutboxEvent {
 
-    @Id
-    private UUID id;
+	@Id
+	private UUID id;
 
-    private UUID eventId;
+	private UUID eventId;
 
-    private String aggregateId;
+	private String aggregateId;
 
-    private String eventType;
+	private String eventType;
 
-    private String topic;
+	private String topic;
 
-    @Lob
-    private String payload;
+	@Lob
+	private String payload;
 
-    @Enumerated(EnumType.STRING)
-    private OutboxStatus status;
+	@Enumerated(EnumType.STRING)
+	private OutboxStatus status;
 
-    private Integer retryCount;
+	private Integer retryCount;
 
-    private Instant createdAt;
+	private Instant createdAt;
 
-    private Instant publishedAt;
+	private Instant publishedAt;
 
-    public static OutboxEvent create(UUID eventId, String aggregateId, String eventType, String topic, String payload) {
-        OutboxEvent e = new OutboxEvent();
-        e.id = UUID.randomUUID();
-        e.eventId = eventId;
-        e.aggregateId = aggregateId;
-        e.eventType = eventType;
-        e.topic = topic;
-        e.payload = payload;
-        e.status = OutboxStatus.PENDING;
-        e.retryCount = 0;
-        e.createdAt = Instant.now();
-        return e;
-    }
+	public static OutboxEvent create(UUID eventId, String aggregateId, String eventType, String topic, String payload) {
+		OutboxEvent e = new OutboxEvent();
+		e.id = UUID.randomUUID();
+		e.eventId = eventId;
+		e.aggregateId = aggregateId;
+		e.eventType = eventType;
+		e.topic = topic;
+		e.payload = payload;
+		e.status = OutboxStatus.PENDING;
+		e.retryCount = 0;
+		e.createdAt = Instant.now();
+		return e;
+	}
 
-    public void markPublished() {
-        status = OutboxStatus.PUBLISHED;
-        publishedAt = Instant.now();
-    }
+	public void markPublished() {
+		status = OutboxStatus.PUBLISHED;
+		publishedAt = Instant.now();
+	}
 
-    public void markFailed() {
-        retryCount++;
-        if (retryCount >= 5) {
-            status = OutboxStatus.FAILED;
-        }
-    }
+	public void markFailed() {
+		retryCount++;
+		if (retryCount >= 5) {
+			status = OutboxStatus.FAILED;
+		}
+	}
+
 }

@@ -8,5 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 @Setter
 public class EventKitProperties {
-    private String outboxTable = "outbox_event";
+
+	private String outboxTable = "outbox_event";
+
 }

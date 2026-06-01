@@ -4,7 +4,8 @@ import java.util.UUID;
 
 public interface DomainEvent {
 
-    UUID eventId();
+	UUID eventId();
 
-    String aggregateId();
+	String aggregateId();
+
 }

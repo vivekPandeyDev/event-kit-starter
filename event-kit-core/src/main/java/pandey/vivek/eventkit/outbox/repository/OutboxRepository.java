@@ -6,4 +6,5 @@ import pandey.vivek.eventkit.outbox.entity.OutboxEvent;
 import java.util.UUID;
 
 public interface OutboxRepository extends JpaRepository<OutboxEvent, UUID> {
+
 }

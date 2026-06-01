@@ -12,20 +12,20 @@ import pandey.vivek.eventkit.outbox.repository.OutboxRepository;
 import pandey.vivek.eventkit.outbox.service.TopicResolver;
 
 @Configuration
-@EnableConfigurationProperties(
-        EventKitProperties.class
-)
+@EnableConfigurationProperties(EventKitProperties.class)
 public class EventKitAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public TopicResolver topicResolver() {
-        return new AnnotationTopicResolver();
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public TopicResolver topicResolver() {
+		return new AnnotationTopicResolver();
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public DomainEventPublisher domainEventPublisher(OutboxRepository repo, ObjectMapper mapper, TopicResolver resolver) {
-        return new OutboxDomainEventPublisher(repo, mapper, resolver);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public DomainEventPublisher domainEventPublisher(OutboxRepository repo, ObjectMapper mapper,
+			TopicResolver resolver) {
+		return new OutboxDomainEventPublisher(repo, mapper, resolver);
+	}
+
 }
