@@ -1,6 +1,5 @@
 package pandey.vivek.eventkit.outbox.entity;
 
-import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,14 +9,11 @@ import pandey.vivek.eventkit.outbox.enums.OutboxStatus;
 import java.time.Instant;
 import java.util.UUID;
 
-@Entity
-@Table(name = "outbox_event")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = { "payload" })
+@ToString(exclude = "payload")
 public class OutboxEvent {
 
-	@Id
 	private UUID id;
 
 	private UUID eventId;
@@ -28,10 +24,8 @@ public class OutboxEvent {
 
 	private String topic;
 
-	@Column(columnDefinition = "TEXT")
 	private String payload;
 
-	@Enumerated(EnumType.STRING)
 	private OutboxStatus status;
 
 	private Integer retryCount;
@@ -41,6 +35,7 @@ public class OutboxEvent {
 	private Instant publishedAt;
 
 	public static OutboxEvent create(UUID eventId, String aggregateId, String eventType, String topic, String payload) {
+
 		OutboxEvent e = new OutboxEvent();
 		e.id = UUID.randomUUID();
 		e.eventId = eventId;
@@ -55,15 +50,34 @@ public class OutboxEvent {
 	}
 
 	public void markPublished() {
-		status = OutboxStatus.PUBLISHED;
-		publishedAt = Instant.now();
+		this.status = OutboxStatus.PUBLISHED;
+		this.publishedAt = Instant.now();
 	}
 
 	public void markFailed() {
-		retryCount++;
-		if (retryCount >= 5) {
-			status = OutboxStatus.FAILED;
+		this.retryCount++;
+
+		if (this.retryCount >= 5) {
+			this.status = OutboxStatus.FAILED;
 		}
+	}
+
+	// Needed when reading from DB
+	public static OutboxEvent restore(UUID id, UUID eventId, String aggregateId, String eventType, String topic,
+			String payload, OutboxStatus status, Integer retryCount, Instant createdAt, Instant publishedAt) {
+
+		OutboxEvent e = new OutboxEvent();
+		e.id = id;
+		e.eventId = eventId;
+		e.aggregateId = aggregateId;
+		e.eventType = eventType;
+		e.topic = topic;
+		e.payload = payload;
+		e.status = status;
+		e.retryCount = retryCount;
+		e.createdAt = createdAt;
+		e.publishedAt = publishedAt;
+		return e;
 	}
 
 }

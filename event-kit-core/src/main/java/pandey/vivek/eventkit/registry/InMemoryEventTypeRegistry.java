@@ -1,7 +1,5 @@
 package pandey.vivek.eventkit.registry;
 
-import pandey.vivek.eventkit.registry.service.EventTypeRegistry;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

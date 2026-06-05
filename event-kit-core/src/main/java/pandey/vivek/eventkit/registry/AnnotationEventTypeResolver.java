@@ -2,7 +2,7 @@ package pandey.vivek.eventkit.registry;
 
 import pandey.vivek.eventkit.annotation.EventType;
 import pandey.vivek.eventkit.api.DomainEvent;
-import pandey.vivek.eventkit.registry.service.EventTypeResolver;
+import pandey.vivek.eventkit.outbox.service.EventTypeResolver;
 
 public class AnnotationEventTypeResolver implements EventTypeResolver {
 

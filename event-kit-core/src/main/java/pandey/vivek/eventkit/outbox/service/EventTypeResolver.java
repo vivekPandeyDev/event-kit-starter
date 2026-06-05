@@ -1,4 +1,4 @@
-package pandey.vivek.eventkit.registry.service;
+package pandey.vivek.eventkit.outbox.service;
 
 import pandey.vivek.eventkit.api.DomainEvent;
 

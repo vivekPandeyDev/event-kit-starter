@@ -6,16 +6,16 @@ import pandey.vivek.eventkit.api.DomainEvent;
 import pandey.vivek.eventkit.api.DomainEventPublisher;
 import pandey.vivek.eventkit.exception.EventPublishException;
 import pandey.vivek.eventkit.outbox.entity.OutboxEvent;
-import pandey.vivek.eventkit.outbox.repository.OutboxRepository;
+import pandey.vivek.eventkit.outbox.repository.OutboxStore;
+import pandey.vivek.eventkit.outbox.service.EventTypeResolver;
 import pandey.vivek.eventkit.outbox.service.TopicResolver;
-import pandey.vivek.eventkit.registry.service.EventTypeResolver;
 import tools.jackson.databind.ObjectMapper;
 
 @RequiredArgsConstructor
 @Slf4j
 public class OutboxDomainEventPublisher implements DomainEventPublisher {
 
-	private final OutboxRepository repo;
+	private final OutboxStore outboxStore;
 
 	private final ObjectMapper mapper;
 
@@ -33,7 +33,7 @@ public class OutboxDomainEventPublisher implements DomainEventPublisher {
 				log.info("Payload for the topic: {}, resolved name: {} payload json: {}", topic, resolveName, payload);
 			}
 			var outbox = OutboxEvent.create(event.eventId(), event.aggregateId(), resolveName, topic, payload);
-			repo.save(outbox);
+			outboxStore.save(outbox);
 			if (log.isDebugEnabled()) {
 				log.info("Saved outbox event with id:{} and event id: {}, outbox event: {}", outbox.getId(),
 						outbox.getEventId(), outbox);

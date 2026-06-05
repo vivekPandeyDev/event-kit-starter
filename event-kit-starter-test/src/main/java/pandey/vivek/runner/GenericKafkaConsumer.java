@@ -3,7 +3,7 @@ package pandey.vivek.runner;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import pandey.vivek.eventkit.registry.service.EventTypeRegistry;
+import pandey.vivek.eventkit.registry.EventTypeRegistry;
 import tools.jackson.databind.ObjectMapper;
 
 @Component

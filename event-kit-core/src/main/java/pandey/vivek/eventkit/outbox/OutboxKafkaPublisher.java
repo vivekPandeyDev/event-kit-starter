@@ -5,21 +5,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.transaction.annotation.Transactional;
-import pandey.vivek.eventkit.outbox.repository.OutboxRepository;
+import pandey.vivek.eventkit.outbox.repository.OutboxStore;
 import pandey.vivek.eventkit.outbox.service.OutboxPublisher;
 
 @RequiredArgsConstructor
 @Slf4j
 public class OutboxKafkaPublisher implements OutboxPublisher {
 
-	private final OutboxRepository repo;
+	private final OutboxStore outboxStore;
 
 	private final KafkaTemplate<String, String> kafka;
 
 	@Override
 	@Transactional
 	public void publishPending(int batchSize) {
-		var events = repo.lockPendingEvents(batchSize);
+		var events = outboxStore.lockPendingEvents(batchSize);
 		for (var event : events) {
 			try {
 				var producerRecord = new ProducerRecord<>(event.getTopic(), event.getAggregateId(), event.getPayload());
