@@ -1,7 +1,6 @@
 create table if not exists outbox_event
 (
-    id uuid primary key,
-    event_id uuid not null,
+    event_id uuid primary key,
     aggregate_id varchar(255) not null,
     event_type varchar(255) not null,
     topic varchar(255) not null,
@@ -20,6 +19,5 @@ create table if not exists processed_event
     event_id uuid not null,
     consumer varchar(255) not null,
     processed_at timestamp not null,
-
     primary key(event_id, consumer)
 );

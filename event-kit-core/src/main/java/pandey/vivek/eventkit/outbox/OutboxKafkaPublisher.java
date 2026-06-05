@@ -27,17 +27,17 @@ public class OutboxKafkaPublisher implements OutboxPublisher {
 				kafka.send(producerRecord).get();
 				log.info("Published outbox event topic:{}, aggregateId:{}, eventType:{}", event.getTopic(),
 						event.getAggregateId(), event.getEventType());
-				event.markPublished();
+				outboxStore.markPublished(event.getEventId());
 			}
 			catch (InterruptedException ex) {
 				Thread.currentThread().interrupt();
 				log.error("Interrupted while publishing topic:{}, aggregateId:{}", event.getTopic(),
 						event.getAggregateId(), ex);
-				event.markFailed();
+				outboxStore.markFailed(event.getEventId());
 			}
 			catch (Exception ex) {
 				log.error("Error publishing topic:{}, aggregateId:{}", event.getTopic(), event.getAggregateId(), ex);
-				event.markFailed();
+				outboxStore.markFailed(event.getEventId());
 			}
 		}
 	}

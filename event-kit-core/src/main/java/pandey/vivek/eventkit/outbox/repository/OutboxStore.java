@@ -7,8 +7,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import pandey.vivek.eventkit.outbox.entity.OutboxEvent;
 import pandey.vivek.eventkit.outbox.enums.OutboxStatus;
+import pandey.vivek.eventkit.util.JdbcConverters;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -23,7 +23,6 @@ public class OutboxStore {
 
 		String sql = """
 				insert into outbox_event(
-				    id,
 				    event_id,
 				    aggregate_id,
 				    event_type,
@@ -35,7 +34,6 @@ public class OutboxStore {
 				    published_at
 				)
 				values (
-				    :id,
 				    :eventId,
 				    :aggregateId,
 				    :eventType,
@@ -48,16 +46,15 @@ public class OutboxStore {
 				)
 				""";
 
-		MapSqlParameterSource params = new MapSqlParameterSource().addValue("id", event.getId())
-			.addValue("eventId", event.getEventId())
+		MapSqlParameterSource params = new MapSqlParameterSource().addValue("eventId", event.getEventId())
 			.addValue("aggregateId", event.getAggregateId())
 			.addValue("eventType", event.getEventType())
 			.addValue("topic", event.getTopic())
 			.addValue("payload", event.getPayload())
 			.addValue("status", event.getStatus().name())
 			.addValue("retryCount", event.getRetryCount())
-			.addValue("createdAt", event.getCreatedAt())
-			.addValue("publishedAt", event.getPublishedAt());
+			.addValue("createdAt", JdbcConverters.toTimestamp(event.getCreatedAt()))
+			.addValue("publishedAt", JdbcConverters.toTimestamp(event.getPublishedAt()));
 
 		jdbc.update(sql, params);
 	}
@@ -76,18 +73,18 @@ public class OutboxStore {
 	}
 
 	@Transactional
-	public void markPublished(UUID id) {
+	public void markPublished(UUID eventId) {
 
 		jdbc.update("""
 				update outbox_event
 				set status = 'PUBLISHED',
 				    published_at = now()
-				where id = :id
-				""", Map.of("id", id));
+				where event_id = :eventId
+				""", Map.of("eventId", eventId));
 	}
 
 	@Transactional
-	public void markFailed(UUID id) {
+	public void markFailed(UUID eventId) {
 
 		jdbc.update("""
 				update outbox_event
@@ -96,21 +93,23 @@ public class OutboxStore {
 				        when retry_count + 1 >= 5 then 'FAILED'
 				        else status
 				    end
-				where id = :id
-				""", Map.of("id", id));
+				where event_id = :eventId
+				""", Map.of("eventId", eventId));
 	}
 
 	private RowMapper<OutboxEvent> rowMapper() {
 
-		return (rs, rowNum) -> OutboxEvent.restore(UUID.fromString(rs.getString("id")),
-				UUID.fromString(rs.getString("event_id")), rs.getString("aggregate_id"), rs.getString("event_type"),
-				rs.getString("topic"), rs.getString("payload"), OutboxStatus.valueOf(rs.getString("status")),
-				rs.getInt("retry_count"), rs.getTimestamp("created_at").toInstant(),
-				toInstant(rs.getTimestamp("published_at")));
-	}
-
-	private static java.time.Instant toInstant(Timestamp timestamp) {
-		return timestamp == null ? null : timestamp.toInstant();
+		return (rs, rowNum) -> OutboxEvent.builder()
+			.eventId(rs.getObject("event_id", UUID.class))
+			.aggregateId(rs.getString("aggregate_id"))
+			.eventType(rs.getString("event_type"))
+			.topic(rs.getString("topic"))
+			.payload(rs.getString("payload"))
+			.status(OutboxStatus.valueOf(rs.getString("status")))
+			.retryCount(rs.getInt("retry_count"))
+			.createdAt(JdbcConverters.toInstant(rs.getTimestamp("created_at")))
+			.publishedAt(JdbcConverters.toInstant(rs.getTimestamp("published_at")))
+			.build();
 	}
 
 }
