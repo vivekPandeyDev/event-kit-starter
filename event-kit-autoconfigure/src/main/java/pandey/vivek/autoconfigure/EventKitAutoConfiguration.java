@@ -32,58 +32,58 @@ import javax.sql.DataSource;
 @EnableScheduling
 public class EventKitAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public TopicResolver topicResolver() {
-        return new AnnotationTopicResolver();
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public TopicResolver topicResolver() {
+		return new AnnotationTopicResolver();
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public OutboxStore outboxStore(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        return new OutboxStore(namedParameterJdbcTemplate);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public OutboxStore outboxStore(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+		return new OutboxStore(namedParameterJdbcTemplate);
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public ProcessedEventStore processedEventStore(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        return new ProcessedEventStore(namedParameterJdbcTemplate);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public ProcessedEventStore processedEventStore(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+		return new ProcessedEventStore(namedParameterJdbcTemplate);
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public DomainEventPublisher domainEventPublisher(OutboxStore repo, ObjectMapper mapper,
-                                                     TopicResolver topicResolver) {
-        return new OutboxDomainEventPublisher(repo, mapper, topicResolver);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public DomainEventPublisher domainEventPublisher(OutboxStore repo, ObjectMapper mapper,
+			TopicResolver topicResolver) {
+		return new OutboxDomainEventPublisher(repo, mapper, topicResolver);
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public OutboxPublisher outboxKafkaPublisher(OutboxStore repo, KafkaTemplate<String, String> kafka) {
-        return new OutboxKafkaPublisher(repo, kafka);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public OutboxPublisher outboxKafkaPublisher(OutboxStore repo, KafkaTemplate<String, String> kafka) {
+		return new OutboxKafkaPublisher(repo, kafka);
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    @DependsOn("eventKitSchemaInitializer")
-    public ScheduledOutboxPublisher scheduledOutboxPublisher(OutboxKafkaPublisher publisher, EventKitProperties props) {
-        return new ScheduledOutboxPublisher(publisher, props);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	@DependsOn("eventKitSchemaInitializer")
+	public ScheduledOutboxPublisher scheduledOutboxPublisher(OutboxKafkaPublisher publisher, EventKitProperties props) {
+		return new ScheduledOutboxPublisher(publisher, props);
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    public EventDeduplicate eventDeduplicate(ProcessedEventStore processedEventStore) {
-        return new JpaEventDeduplicate(processedEventStore);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	public EventDeduplicate eventDeduplicate(ProcessedEventStore processedEventStore) {
+		return new JpaEventDeduplicate(processedEventStore);
+	}
 
-    @Bean
-    @ConditionalOnBean(DataSource.class)
-    InitializingBean eventKitSchemaInitializer(DataSource dataSource) {
+	@Bean
+	@ConditionalOnBean(DataSource.class)
+	InitializingBean eventKitSchemaInitializer(DataSource dataSource) {
 
-        return () -> {
-            var populate = new ResourceDatabasePopulator(new ClassPathResource("eventkit-schema.sql"));
-            DatabasePopulatorUtils.execute(populate, dataSource);
-        };
-    }
+		return () -> {
+			var populate = new ResourceDatabasePopulator(new ClassPathResource("eventkit-schema.sql"));
+			DatabasePopulatorUtils.execute(populate, dataSource);
+		};
+	}
 
 }
