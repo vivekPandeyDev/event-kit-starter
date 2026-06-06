@@ -6,13 +6,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 import pandey.vivek.eventkit.processed.entity.ProcessedEvent;
 import pandey.vivek.eventkit.processed.repository.ProcessedEventStore;
-import pandey.vivek.eventkit.processed.service.EventDeduplicator;
+import pandey.vivek.eventkit.processed.service.EventDeduplicate;
 
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Slf4j
-public class JpaEventDeduplicator implements EventDeduplicator {
+public class JpaEventDeduplicate implements EventDeduplicate {
 
 	private final ProcessedEventStore processedEventStore;
 

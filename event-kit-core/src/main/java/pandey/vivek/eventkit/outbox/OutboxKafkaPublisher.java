@@ -23,10 +23,8 @@ public class OutboxKafkaPublisher implements OutboxPublisher {
 		for (var event : events) {
 			try {
 				var producerRecord = new ProducerRecord<>(event.getTopic(), event.getAggregateId(), event.getPayload());
-				producerRecord.headers().add("eventType", event.getEventType().getBytes());
 				kafka.send(producerRecord).get();
-				log.info("Published outbox event topic:{}, aggregateId:{}, eventType:{}", event.getTopic(),
-						event.getAggregateId(), event.getEventType());
+				log.info("Published outbox event topic:{}, aggregateId:{}", event.getTopic(), event.getAggregateId());
 				outboxStore.markPublished(event.getEventId());
 			}
 			catch (InterruptedException ex) {

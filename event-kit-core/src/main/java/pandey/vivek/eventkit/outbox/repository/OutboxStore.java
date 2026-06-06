@@ -16,6 +16,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OutboxStore {
 
+	public static final String EVENT_ID = "eventId";
+
 	private final NamedParameterJdbcTemplate jdbc;
 
 	@Transactional
@@ -25,7 +27,6 @@ public class OutboxStore {
 				insert into outbox_event(
 				    event_id,
 				    aggregate_id,
-				    event_type,
 				    topic,
 				    payload,
 				    status,
@@ -36,7 +37,6 @@ public class OutboxStore {
 				values (
 				    :eventId,
 				    :aggregateId,
-				    :eventType,
 				    :topic,
 				    :payload,
 				    :status,
@@ -46,9 +46,8 @@ public class OutboxStore {
 				)
 				""";
 
-		MapSqlParameterSource params = new MapSqlParameterSource().addValue("eventId", event.getEventId())
+		MapSqlParameterSource params = new MapSqlParameterSource().addValue(EVENT_ID, event.getEventId())
 			.addValue("aggregateId", event.getAggregateId())
-			.addValue("eventType", event.getEventType())
 			.addValue("topic", event.getTopic())
 			.addValue("payload", event.getPayload())
 			.addValue("status", event.getStatus().name())
@@ -80,7 +79,7 @@ public class OutboxStore {
 				set status = 'PUBLISHED',
 				    published_at = now()
 				where event_id = :eventId
-				""", Map.of("eventId", eventId));
+				""", Map.of(EVENT_ID, eventId));
 	}
 
 	@Transactional
@@ -94,7 +93,7 @@ public class OutboxStore {
 				        else status
 				    end
 				where event_id = :eventId
-				""", Map.of("eventId", eventId));
+				""", Map.of(EVENT_ID, eventId));
 	}
 
 	private RowMapper<OutboxEvent> rowMapper() {
@@ -102,7 +101,6 @@ public class OutboxStore {
 		return (rs, rowNum) -> OutboxEvent.builder()
 			.eventId(rs.getObject("event_id", UUID.class))
 			.aggregateId(rs.getString("aggregate_id"))
-			.eventType(rs.getString("event_type"))
 			.topic(rs.getString("topic"))
 			.payload(rs.getString("payload"))
 			.status(OutboxStatus.valueOf(rs.getString("status")))

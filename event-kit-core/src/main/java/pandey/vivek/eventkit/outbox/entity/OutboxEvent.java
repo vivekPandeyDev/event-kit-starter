@@ -17,8 +17,6 @@ public class OutboxEvent {
 
 	private String aggregateId;
 
-	private String eventType;
-
 	private String topic;
 
 	private String payload;
@@ -31,12 +29,11 @@ public class OutboxEvent {
 
 	private Instant publishedAt;
 
-	public static OutboxEvent create(UUID eventId, String aggregateId, String eventType, String topic, String payload) {
+	public static OutboxEvent create(UUID eventId, String aggregateId, String topic, String payload) {
 
 		return OutboxEvent.builder()
 			.eventId(eventId)
 			.aggregateId(aggregateId)
-			.eventType(eventType)
 			.topic(topic)
 			.payload(payload)
 			.status(OutboxStatus.PENDING)

@@ -18,7 +18,7 @@ public class PublishRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
 
-        publisher.publish(new TestEvent(UUID.randomUUID(), UUID.randomUUID()));
+        publisher.publish(new MediaEventTest(UUID.randomUUID(), UUID.randomUUID()));
         System.out.println("EVENT PUBLISHED");
     }
 }

@@ -1,17 +1,12 @@
 package pandey.vivek.runner;
 
 import pandey.vivek.eventkit.annotation.EventTopic;
-import pandey.vivek.eventkit.annotation.EventType;
 import pandey.vivek.eventkit.api.DomainEvent;
 
 import java.util.UUID;
 
 @EventTopic("media-events")
-@EventType("media.uploaded")
-public record TestEvent(UUID eventId, UUID mediaId) implements DomainEvent {
-
-    public TestEvent {
-    }
+public record MediaEventTest(UUID eventId, UUID mediaId) implements DomainEvent {
 
     @Override
     public String aggregateId() {
